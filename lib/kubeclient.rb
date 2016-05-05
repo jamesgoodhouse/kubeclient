@@ -17,7 +17,7 @@ module Kubeclient
     # This cancels the need to define the classes
     # manually on every new entity addition,
     # and especially since currently the class body is empty
-    ENTITY_TYPES = %w(Pod Service ReplicationController Node Event Endpoint
+    ENTITY_TYPES = %w(Pod Service ReplicationController Node Event Endpoint Deployment
                       Namespace Secret ResourceQuota LimitRange PersistentVolume
                       PersistentVolumeClaim ComponentStatus ServiceAccount).map do |et|
       clazz = Class.new(RecursiveOpenStruct) do
@@ -32,6 +32,7 @@ module Kubeclient
     ClientMixin.define_entity_methods(ENTITY_TYPES)
 
     def initialize(uri,
+                   api_route = '/api',
                    version = 'v1',
                    ssl_options: {
                      client_cert: nil,
@@ -51,8 +52,9 @@ module Kubeclient
                      ssl_socket_class: nil
                    }
                   )
-      initialize_client(uri, '/api', version, ssl_options: ssl_options, auth_options: auth_options,
-                                              socket_options: socket_options)
+      initialize_client(uri, api_route, version, ssl_options: ssl_options,
+                                                 auth_options: auth_options,
+                                                 socket_options: socket_options)
     end
 
     def all_entities
